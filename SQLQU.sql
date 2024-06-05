@@ -222,7 +222,7 @@ ORDER BY PropertyAddress
 The issue in the provided query arises from the placement of the ORDER BY clause 
 within the CTE. In SQL, the ORDER BY clause inside a CTE (or subquery) is not 
 allowed unless it's used with TOP or FETCH NEXT to limit the number of rows. 
-Here’s why and how to fix it:
+Hereâ€™s why and how to fix it:
 
 Issue with the ORDER BY in the CTE
 The ORDER BY ParcelID inside the CTE doesn't serve a meaningful purpose and causes
@@ -265,3 +265,56 @@ FROM PortfolioProject..NashvilleHousing
 -- 9:05 Not sure if this has been pointed out, but the reason the SaleDate column didn't "update" 
 -- here is because UPDATE does not change data types. The table is actually updating, but the data type for the column SaleDate is still datetime.
 --To change data type, one has to use ``` ALTER TABLE NashvilleHousing ALTER COLUMN SaleDate DATE ```
+
+/*
+He did not explain these cause they are too complicated:
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+
+--- Importing Data using OPENROWSET and BULK INSERT	
+
+--  More advanced and looks cooler, but have to configure server appropriately to do correctly
+--  Wanted to provide this in case you wanted to try it
+
+
+--sp_configure 'show advanced options', 1;
+--RECONFIGURE;
+--GO
+--sp_configure 'Ad Hoc Distributed Queries', 1;
+--RECONFIGURE;
+--GO
+
+
+--USE PortfolioProject 
+
+--GO 
+
+--EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'AllowInProcess', 1 
+
+--GO 
+
+--EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1 
+
+--GO 
+
+
+---- Using BULK INSERT
+
+--USE PortfolioProject;
+--GO
+--BULK INSERT nashvilleHousing FROM 'C:\Temp\SQL Server Management Studio\Nashville Housing Data for Data Cleaning Project.csv'
+--   WITH (
+--      FIELDTERMINATOR = ',',
+--      ROWTERMINATOR = '\n'
+--);
+--GO
+
+
+---- Using OPENROWSET
+--USE PortfolioProject;
+--GO
+--SELECT * INTO nashvilleHousing
+--FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
+--    'Excel 12.0; Database=C:\Users\alexf\OneDrive\Documents\SQL Server Management Studio\Nashville Housing Data for Data Cleaning Project.csv', [Sheet1$]);
+--GO
+*/
